@@ -1,2 +1,29 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+  import * as nodes from '../data/structure';
+  import NodeTextEditor from '../components/NodeTextEditor.svelte';
+	import NodeOutline from '../components/NodeOutline.svelte';
+
+  let node: nodes.DataNode = nodes.createTextNode("Hello, world!");
+
+  if ('window' in globalThis) {
+    (window as any).text = node;
+  }
+</script>
+
+<div class="container">
+  <div class="editor">
+    <NodeTextEditor node={node} notifyChangesToParent={() => {
+      node = node;
+    }} />
+  </div>
+  <div class="outline">
+    <NodeOutline node={node} />
+  </div>
+</div>
+
+<style>
+  .container {
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+  }
+</style>
