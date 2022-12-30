@@ -12,7 +12,7 @@ export interface ParagraphNode {
   memo?: string;
 }
 
-interface ConvertionNode {
+export interface ConvertionNode {
   type: NodeType;
   children?: DataNode[];
   text?: string;
@@ -20,11 +20,11 @@ interface ConvertionNode {
   memo?: string;
 }
 
-function isTextNode(node: ConvertionNode): node is TextNode {
+export function isTextNode(node: ConvertionNode): node is TextNode {
   return node.type === 'text';
 }
 
-function isParagraphNode(node: ConvertionNode): node is ParagraphNode {
+export function isParagraphNode(node: ConvertionNode): node is ParagraphNode {
   return node.type === 'paragraph';
 }
 
