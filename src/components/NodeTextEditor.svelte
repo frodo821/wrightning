@@ -1,70 +1,74 @@
 <script lang="ts">
-  import * as nodes from '../data/structure';
-  import type { EventArg } from '../types/eventArgs';
+  import * as nodes from '../data/structure'
+  import type { EventArg } from '../types/eventArgs'
 
-  export let node: nodes.DataNode;
-  export let parent: nodes.ParagraphNode | null = null;
-  export let notifyChangesToParent: () => void = () => {};
-  export let requestFlatten: (nth: number) => void = () => {};
-  export let depth: number = 0;
-  export let nth: number = 0;
+  export let node: nodes.DataNode
+  export let parent: nodes.ParagraphNode | null = null
+  export let notifyChangesToParent: () => void = () => {}
+  export let requestFlatten: (nth: number) => void = () => {}
+  export let depth: number = 0
+  export let nth: number = 0
 
-  let isExtended: boolean = true;
-  let editor: HTMLTextAreaElement;
+  let isExtended: boolean = true
+  let editor: HTMLTextAreaElement
 
   function textAreaOnKeyDown(event: EventArg<KeyboardEvent, HTMLTextAreaElement>) {
     if (!event.ctrlKey) {
-      return;
+      return
     }
 
-    const text = node as nodes.TextNode;
-    node = node;
-    notifyChangesToParent();
+    const text = node as nodes.TextNode
+    node = node
+    notifyChangesToParent()
 
     if (event.key === 'Enter') {
-      event.preventDefault();
+      event.preventDefault()
 
       if (editor.selectionStart === 0) {
-        nodes.insertNewNodeBeforeTextNode(text, nodes.createTextNode(""));
-        requestFlatten(nth);
-        return;
+        nodes.insertNewNodeBeforeTextNode(text, nodes.createTextNode(''))
+        requestFlatten(nth)
+        return
       } else if (editor.selectionStart >= text.text.length) {
-        nodes.insertNewNodeAfterTextNode(text, nodes.createTextNode(""));
-        requestFlatten(nth);
-        return;
+        nodes.insertNewNodeAfterTextNode(text, nodes.createTextNode(''))
+        requestFlatten(nth)
+        return
       }
-      nodes.insertNewNodeToTextNode(text, nodes.createTextNode(""), editor.selectionStart);
-      return;
+      nodes.insertNewNodeToTextNode(text, nodes.createTextNode(''), editor.selectionStart)
+      return
     }
 
     if (event.key === 'Backspace') {
-      event.preventDefault();
+      event.preventDefault()
       if (!parent) {
-        return;
+        return
       }
 
-      if (!confirm("本当にセクションを削除しますか？")) {
-        return;
+      if (!confirm('本当にセクションを削除しますか？')) {
+        return
       }
 
-      nodes.removeNodeFromParagraphNode(parent, text);
+      nodes.removeNodeFromParagraphNode(parent, text)
     }
   }
 
   function onFlattenRequested(nth: number) {
     if (node.type === 'text') {
-      return;
+      return
     }
-    nodes.flattenParagraphNodeAt(node, nth);
-    node = node;
+    nodes.flattenParagraphNodeAt(node, nth)
+    node = node
   }
 </script>
 
-
 <div class="nte-root" id={`${depth}.${nth}.${node.title ?? 'unnamed'}`}>
-  <div class="nte-header"></div>
+  <div class="nte-header" />
   <div class="nte-title">
-    <input type="text" bind:value={node.title} placeholder="セクションのタイトル" on:input={() => notifyChangesToParent()} />
+    <input
+      type="text"
+      bind:value={node.title}
+      placeholder="セクションのタイトル"
+      on:input={() => notifyChangesToParent()}
+    />
   </div>
   <div class="nte-content">
     {#if isExtended}
@@ -74,21 +78,21 @@
           bind:this={editor}
           on:keydown={textAreaOnKeyDown}
           on:input={() => {
-            editor.style.height = '0';
-            editor.style.height = `${Math.max(editor.scrollHeight, 60)}px`;
+            editor.style.height = '0'
+            editor.style.height = `${Math.max(editor.scrollHeight, 60)}px`
           }}
-        ></textarea>
+        />
       {:else}
         {#each node.children as child, idx}
           <svelte:self
             node={child}
-            depth={depth+1}
+            depth={depth + 1}
             nth={idx}
             parent={node}
             notifyChangesToParent={() => {
-              notifyChangesToParent();
-              nodes.canonicalizeNodes(node);
-              node = node;
+              notifyChangesToParent()
+              nodes.canonicalizeNodes(node)
+              node = node
             }}
             requestFlatten={onFlattenRequested}
           />
@@ -99,44 +103,50 @@
     {/if}
     <div class="nte-footer">
       <div class="nte-insert-child">
-        <button on:click={() => {
-          if (node.type === 'text') {
-            nodes.insertNewNodeBeforeTextNode(node, nodes.createTextNode(""), true);
-            requestFlatten(nth);
-            notifyChangesToParent();
-            return;
-          }
-          node.children.unshift(nodes.createTextNode(""));
-          requestFlatten(nth);
-          notifyChangesToParent();
-          return;
-        }}>直前に兄弟セクションを追加する</button>
+        <button
+          on:click={() => {
+            if (node.type === 'text') {
+              nodes.insertNewNodeBeforeTextNode(node, nodes.createTextNode(''), true)
+              requestFlatten(nth)
+              notifyChangesToParent()
+              return
+            }
+            node.children.unshift(nodes.createTextNode(''))
+            requestFlatten(nth)
+            notifyChangesToParent()
+            return
+          }}>直前に兄弟セクションを追加する</button
+        >
       </div>
       <div class="nte-insert-child">
-        <button on:click={() => {
-          if (node.type === 'text') {
-            nodes.insertNewNodeAfterTextNode(node, nodes.createTextNode(""));
-            notifyChangesToParent();
-            return;
-          }
-          node.children.push(nodes.createTextNode(""));
-          notifyChangesToParent();
-          return;
-        }}>子セクションを追加する</button>
+        <button
+          on:click={() => {
+            if (node.type === 'text') {
+              nodes.insertNewNodeAfterTextNode(node, nodes.createTextNode(''))
+              notifyChangesToParent()
+              return
+            }
+            node.children.push(nodes.createTextNode(''))
+            notifyChangesToParent()
+            return
+          }}>子セクションを追加する</button
+        >
       </div>
       <div class="nte-insert-child">
-        <button on:click={() => {
-          if (node.type === 'text') {
-            nodes.insertNewNodeAfterTextNode(node, nodes.createTextNode(""), true);
-            requestFlatten(nth);
-            notifyChangesToParent();
-            return;
-          }
-          node.children.push(nodes.createTextNode(""));
-          requestFlatten(nth);
-          notifyChangesToParent();
-          return;
-        }}>直後に兄弟セクションを追加する</button>
+        <button
+          on:click={() => {
+            if (node.type === 'text') {
+              nodes.insertNewNodeAfterTextNode(node, nodes.createTextNode(''), true)
+              requestFlatten(nth)
+              notifyChangesToParent()
+              return
+            }
+            node.children.push(nodes.createTextNode(''))
+            requestFlatten(nth)
+            notifyChangesToParent()
+            return
+          }}>直後に兄弟セクションを追加する</button
+        >
       </div>
     </div>
   </div>
@@ -172,7 +182,8 @@
     resize: none;
     white-space: pre-wrap;
     word-wrap: break-word;
-    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo,
+      sans-serif;
     font-size: 1.2rem;
     padding: 0.3rem;
     border-radius: 3px;

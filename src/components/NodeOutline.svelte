@@ -1,11 +1,10 @@
 <script lang="ts">
-  import type * as nodes from '../data/structure';
+  import type * as nodes from '../data/structure'
 
-  export let node: nodes.DataNode;
-  export let depth: number = 0;
-  export let nth: number = 0;
+  export let node: nodes.DataNode
+  export let depth: number = 0
+  export let nth: number = 0
 </script>
-
 
 {#if depth === 0}
   <ul class="root-container">
@@ -40,4 +39,3 @@
     {/if}
   </li>
 {/if}
-

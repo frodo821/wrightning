@@ -1,23 +1,26 @@
 <script lang="ts">
-  import * as nodes from '../data/structure';
-  import NodeTextEditor from '../components/NodeTextEditor.svelte';
-	import NodeOutline from '../components/NodeOutline.svelte';
+  import * as nodes from '../data/structure'
+  import NodeTextEditor from '../components/NodeTextEditor.svelte'
+  import NodeOutline from '../components/NodeOutline.svelte'
 
-  let node: nodes.DataNode = nodes.createTextNode("Hello, world!");
+  let node: nodes.DataNode = nodes.createTextNode('Hello, world!')
 
   if ('window' in globalThis) {
-    (window as any).text = node;
+    ;(window as any).text = node
   }
 </script>
 
 <div class="container">
   <div class="editor">
-    <NodeTextEditor node={node} notifyChangesToParent={() => {
-      node = node;
-    }} />
+    <NodeTextEditor
+      {node}
+      notifyChangesToParent={() => {
+        node = node
+      }}
+    />
   </div>
   <div class="outline">
-    <NodeOutline node={node} />
+    <NodeOutline {node} />
   </div>
 </div>
 
