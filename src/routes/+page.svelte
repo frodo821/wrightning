@@ -1,7 +1,6 @@
 <script lang="ts">
   import * as nodes from '../data/structure';
-  import NodeTextEditor from '../components/NodeTextEditor.svelte';
-  import NodeOutline from '../components/NodeOutline.svelte';
+  import TextEditor from '../components/TextEditor.svelte';
 
   let node: nodes.DataNode = nodes.createParagraphNode([
     nodes.createTextNode('Hello, world!'),
@@ -19,24 +18,52 @@
   }
 </script>
 
-<div class="container">
-  <div class="editor">
-    <NodeTextEditor
-      {node}
-      notifyChangesToParent={() => {
-        localStorage.setItem('content', JSON.stringify(node));
-        node = node;
-      }}
-    />
+
+<div class="editor-layout">
+  <div class="header"></div>
+  <div class="sidebar-left"></div>
+  <div class="main">
+    <TextEditor {node} />
   </div>
-  <div class="outline">
-    <NodeOutline {node} />
-  </div>
+  <div class="sidebar-right"></div>
+  <div class="footer"></div>
 </div>
 
-<style>
-  .container {
+
+<style lang="scss">
+  :global(body) {
+    margin: 0;
+    padding: 0;
+  }
+
+  .editor-layout {
     display: grid;
-    grid-template-columns: 5fr 1fr;
+    grid-auto-rows: 1fr;
+    grid-template-columns: 1.5fr 7fr /*1.5fr*/;
+    grid-template-rows: 2rem 1fr 2rem;
+    gap: 0px 0px;
+    grid-template-areas:
+      "header header header"
+      "sidebar-left main sidebar-right"
+      "footer footer footer";
+    width: 100vw;
+    height: 100vh;
+
+    > .main {
+      grid-area: main;
+      overflow: hidden;
+    }
+    > .sidebar-right {
+      grid-area: sidebar-right;
+    }
+    > .sidebar-left {
+      grid-area: sidebar-left;
+    }
+    > .header {
+      grid-area: header;
+    }
+    > .footer {
+      grid-area: footer;
+    }
   }
 </style>

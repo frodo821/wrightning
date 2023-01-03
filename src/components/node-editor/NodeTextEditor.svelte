@@ -1,6 +1,6 @@
 <script lang="ts">
-  import * as nodes from '../data/structure';
-  import type { EventArg } from '../types/eventArgs';
+  import * as nodes from '../../data/structure';
+  import type { EventArg } from '../../types/eventArgs';
 
   export let node: nodes.DataNode;
   export let parent: nodes.ParagraphNode | null = null;
@@ -186,7 +186,7 @@
   {/if}
 </div>
 
-<style>
+<style lang="scss">
   .nte-root {
     display: flex;
     flex-direction: column;
@@ -194,86 +194,86 @@
     padding: 0.5rem 0 0.5rem 0.5rem;
     border-left: solid 4px lightgray;
     position: relative;
-  }
 
-  .nte-root:focus-within {
-    border-left: solid 4px skyblue;
-  }
+    &:focus-within {
+      border-left: solid 4px skyblue;
+    }
 
-  .nte-root .nte-title input {
-    height: 2rem;
-    border: none;
-    width: 100%;
-    margin-right: 4rem;
-    font-size: 1.8rem;
-    font-weight: bold;
-  }
+    .nte-title {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
 
-  .nte-root .nte-title input:focus {
-    border-bottom: solid 2px skyblue;
-    outline: none;
-  }
+      input {
+        height: 2rem;
+        border: none;
+        width: 100%;
+        margin-right: 4rem;
+        font-size: 1.8rem;
+        font-weight: bold;
 
-  .nte-root .nte-content textarea {
-    overflow-y: hidden;
-    min-height: 80px;
-    resize: none;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo,
-      sans-serif;
-    font-size: 1.2rem;
-    padding: 0.3rem;
-    border: none;
-    border-bottom: solid 2px gray;
-  }
+        &:focus {
+          border-bottom: solid 2px skyblue;
+          outline: none;
+        }
+      }
+    }
 
-  .nte-root .nte-content textarea:focus {
-    outline: none;
-    border-bottom: solid 2px skyblue;
-  }
+    .nte-content {
+      display: flex;
+      flex-direction: column;
+      margin: 0.5rem 0 0.5rem 0.5rem;
 
-  .nte-root .nte-retracted-body {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    cursor: pointer;
-  }
+      textarea {
+        overflow-y: hidden;
+        min-height: 80px;
+        resize: none;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo,
+          sans-serif;
+        font-size: 1.2rem;
+        padding: 0.3rem;
+        border: none;
+        border-bottom: solid 2px gray;
 
-  .nte-root .nte-toggle-visible {
-    border: none;
-    background: none;
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 1.5rem;
-    user-select: none;
-    cursor: pointer;
-  }
+        &:focus {
+          outline: none;
+          border-bottom: solid 2px skyblue;
+        }
+      }
+    }
 
-  .nte-root .nte-toggle-visible.extended {
-    transform: rotate(180deg);
-  }
+    .nte-retracted-body {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      cursor: pointer;
+    }
 
-  .nte-root .nte-toggle-visible.retracted {
-    transform: rotate(90deg);
-  }
+    .nte-toggle-visible {
+      border: none;
+      background: none;
+      width: 2.5rem;
+      height: 2.5rem;
+      font-size: 1.5rem;
+      user-select: none;
+      cursor: pointer;
 
-  .nte-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
+      &.extended {
+        transform: rotate(180deg);
+      }
 
-  .nte-title {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
+      &.retracted {
+        transform: rotate(90deg);
+      }
+    }
 
-  .nte-content {
-    display: flex;
-    flex-direction: column;
-    margin: 0.5rem 0 0.5rem 0.5rem;
+    .nte-header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
   }
 
   .nte-footer {
