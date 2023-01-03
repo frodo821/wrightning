@@ -1,12 +1,21 @@
 <script lang="ts">
-  import * as nodes from '../data/structure'
-  import NodeTextEditor from '../components/NodeTextEditor.svelte'
-  import NodeOutline from '../components/NodeOutline.svelte'
+  import * as nodes from '../data/structure';
+  import NodeTextEditor from '../components/NodeTextEditor.svelte';
+  import NodeOutline from '../components/NodeOutline.svelte';
 
-  let node: nodes.DataNode = nodes.createTextNode('Hello, world!')
+  let node: nodes.DataNode = nodes.createParagraphNode([
+    nodes.createTextNode('Hello, world!'),
+  ]);
 
   if ('window' in globalThis) {
-    ;(window as any).text = node
+    (window as any).text = node;
+  }
+
+  if ('localStorage' in globalThis) {
+    const saved = localStorage.getItem('content');
+    if (saved) {
+      node = JSON.parse(saved);
+    }
   }
 </script>
 
@@ -15,7 +24,8 @@
     <NodeTextEditor
       {node}
       notifyChangesToParent={() => {
-        node = node
+        localStorage.setItem('content', JSON.stringify(node));
+        node = node;
       }}
     />
   </div>
