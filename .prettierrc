@@ -8,6 +8,6 @@
   "pluginSearchDirs": ["."],
   "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }],
   "tabWidth": 2,
-  "semi": false,
+  "semi": true,
   "arrowParens": "always"
 }

@@ -1,1 +1,1 @@
-export type EventArg<TEvent, TTarget> = TEvent & { currentTarget: EventTarget & TTarget }
+export type EventArg<TEvent, TTarget> = TEvent & { currentTarget: EventTarget & TTarget };
