@@ -1,6 +1,8 @@
 <script lang="ts">
   import * as nodes from '../data/structure';
   import TextEditor from '../components/TextEditor.svelte';
+  import EditorLeftSideMenu from '../components/EditorLeftSideMenu.svelte';
+  import EditorHeader from '../components/header/EditorHeader.svelte';
 
   let node: nodes.DataNode = nodes.createParagraphNode([
     nodes.createTextNode('Hello, world!'),
@@ -20,8 +22,12 @@
 
 
 <div class="editor-layout">
-  <div class="header"></div>
-  <div class="sidebar-left"></div>
+  <div class="header">
+    <EditorHeader />
+  </div>
+  <div class="sidebar-left">
+    <EditorLeftSideMenu />
+  </div>
   <div class="main">
     <TextEditor {node} />
   </div>
@@ -61,6 +67,7 @@
     }
     > .header {
       grid-area: header;
+      background-color: #f0f0f0;
     }
     > .footer {
       grid-area: footer;

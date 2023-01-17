@@ -1,6 +1,9 @@
 <script lang="ts">
   import * as nodes from '../../data/structure';
   import type { EventArg } from '../../types/eventArgs';
+  import IconButton from '@smui/icon-button';
+  import Tooltip, { Wrapper } from '@smui/tooltip';
+  import Textfield from '@smui/textfield';
 
   export let node: nodes.DataNode;
   export let parent: nodes.ParagraphNode | null = null;
@@ -71,10 +74,10 @@
     >
       ▲
     </button>
-    <input
-      type="text"
+    <Textfield
+      class="nte-title-text"
+      label="セクションのタイトル"
       bind:value={node.title}
-      placeholder="セクションのタイトル"
       on:input={() => notifyChangesToParent()}
     />
   </div>
@@ -118,8 +121,9 @@
   </div>
   {#if isExtended}
     <div class="nte-footer">
-      <div class="nte-insert-child">
-        <button
+      <Wrapper class="nte-insert-child">
+        <IconButton
+          class="material-icons"
           on:click={() => {
             if (node.type === 'text') {
               nodes.insertNewNodeBeforeTextNode(node, nodes.createTextNode(''), true);
@@ -131,11 +135,13 @@
             requestFlatten(nth);
             notifyChangesToParent();
             return;
-          }}>1つ前のセクションを追加する</button
+          }}>swipe_up_alt</IconButton
         >
-      </div>
-      <div class="nte-insert-child">
-        <button
+        <Tooltip>1つ前のセクションを追加する</Tooltip>
+      </Wrapper>
+      <Wrapper class="nte-insert-child">
+        <IconButton
+          class="material-icons"
           on:click={() => {
             if (node.type === 'text') {
               nodes.insertNewNodeAfterTextNode(node, nodes.createTextNode(''));
@@ -145,11 +151,13 @@
             node.children.push(nodes.createTextNode(''));
             notifyChangesToParent();
             return;
-          }}>子セクションを追加する</button
+          }}>note_add</IconButton
         >
-      </div>
-      <div class="nte-insert-child">
-        <button
+        <Tooltip>子セクションを追加する</Tooltip>
+      </Wrapper>
+      <Wrapper class="nte-insert-child">
+        <IconButton
+          class="material-icons"
           on:click={() => {
             const n = node;
             if (node.type === 'text') {
@@ -165,11 +173,13 @@
               return;
             }
             throw new Error(`unknown node type: '${n.type}'`);
-          }}>1つ後のセクションを追加する</button
+          }}>swipe_down_alt</IconButton
         >
-      </div>
-      <div class="nte-insert-child nte-delete-this">
-        <button
+        <Tooltip>1つ後のセクションを追加する</Tooltip>
+      </Wrapper>
+      <Wrapper class="nte-insert-child nte-delete-this">
+        <IconButton
+          class="material-icons"
           disabled={parent === null}
           on:click={() => {
             if (!confirm('本当にセクションを削除しますか？')) {
@@ -179,9 +189,10 @@
               nodes.removeNodeFromParagraphNode(parent, node);
             }
             notifyChangesToParent();
-          }}>このセクションを削除</button
+          }}>delete</IconButton
         >
-      </div>
+        <Tooltip>このセクションを削除する</Tooltip>
+      </Wrapper>
     </div>
   {/if}
 </div>
@@ -192,11 +203,11 @@
     flex-direction: column;
     margin: 0.5rem 0 0.5rem 0.1rem;
     padding: 0.5rem 0 0.5rem 0.5rem;
-    border-left: solid 4px lightgray;
+    border-left: solid 4px var(--mdc-theme-secondary, #676778);
     position: relative;
 
     &:focus-within {
-      border-left: solid 4px skyblue;
+      border-left: solid 4px var(--mdc-theme-primary, #ff3e00);
     }
 
     .nte-title {
@@ -204,8 +215,7 @@
       flex-direction: row;
       justify-content: space-between;
 
-      input {
-        height: 2rem;
+      :global(.nte-title-text) {
         border: none;
         width: 100%;
         margin-right: 4rem;
@@ -213,7 +223,7 @@
         font-weight: bold;
 
         &:focus {
-          border-bottom: solid 2px skyblue;
+          border-bottom: solid 2px var(--mdc-theme-primary, #ff3e00);
           outline: none;
         }
       }
@@ -235,11 +245,11 @@
         font-size: 1.2rem;
         padding: 0.3rem;
         border: none;
-        border-bottom: solid 2px gray;
+        border-bottom: solid 1px gray;
 
         &:focus {
           outline: none;
-          border-bottom: solid 2px skyblue;
+          border-bottom: solid 2px var(--mdc-theme-primary, #ff3e00);
         }
       }
     }
@@ -259,6 +269,7 @@
       font-size: 1.5rem;
       user-select: none;
       cursor: pointer;
+      margin: auto 0;
 
       &.extended {
         transform: rotate(180deg);
@@ -290,11 +301,5 @@
   .nte-root .nte-content:focus-within+.nte-footer,
   .nte-root:hover > .nte-footer {
     opacity: 1;
-  }
-
-  .nte-insert-child {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
   }
 </style>

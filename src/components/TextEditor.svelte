@@ -17,7 +17,9 @@
     />
   </div>
   <div class="outline">
-    <NodeOutline {node} />
+    <div class="outline-wrapper">
+      <NodeOutline {node} />
+    </div>
   </div>
 </div>
 
@@ -35,6 +37,10 @@
     > .outline {
       height: 100%;
       overflow: auto;
+
+      > .outline-wrapper {
+        padding: 0.2rem 0.5rem;
+      }
     }
   }
 </style>

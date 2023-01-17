@@ -9,7 +9,7 @@
   <ul class="root-container">
     <li class="container">
       <div class="self-link">
-        <a href={`#${node.id}`}>{node.title ?? 'unnamed'}</a>
+        <a href={`#${node.id}`}>{node.title || 'unnamed'}</a>
       </div>
       {#if node.type === 'paragraph'}
         <ul class="children">
@@ -25,7 +25,7 @@
 {:else}
   <li class="container">
     <div class="self-link">
-      <a href={`#${node.id}`}>{node.title ?? 'unnamed'}</a>
+      <a href={`#${node.id}`}>{node.title || 'unnamed'}</a>
     </div>
     {#if node.type === 'paragraph'}
       <ul class="children">

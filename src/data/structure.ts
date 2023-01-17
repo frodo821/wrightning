@@ -4,8 +4,8 @@
 export interface TextNode {
   type: 'text';
   text: string;
-  title?: string;
-  memo?: string;
+  title: string;
+  memo: string;
   id: string;
 }
 
@@ -15,8 +15,8 @@ export interface TextNode {
 export interface ParagraphNode {
   type: 'paragraph';
   children: DataNode[];
-  title?: string;
-  memo?: string;
+  title: string;
+  memo: string;
   id: string;
 }
 
@@ -30,8 +30,8 @@ export interface ConversionNode {
   type: NodeType;
   children?: DataNode[];
   text?: string;
-  title?: string;
-  memo?: string;
+  title: string;
+  memo: string;
   id: string;
 }
 
@@ -85,6 +85,9 @@ export function isParagraphNode(node: ConversionNode): node is ParagraphNode {
  * @returns a new TextNode.
  */
 export function createTextNode(text: string, title?: string, memo?: string): TextNode {
+  title ??= '';
+  memo ??= '';
+
   return {
     type: 'text',
     text,
@@ -106,7 +109,9 @@ export function createParagraphNode(
   title?: string,
   memo?: string,
 ): ParagraphNode {
-  children = children ?? [];
+  children ??= [];
+  title ??= '';
+  memo ??= '';
 
   return {
     type: 'paragraph',
