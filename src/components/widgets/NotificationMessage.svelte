@@ -13,25 +13,35 @@
     severity: 'notice',
     timeout: defaultMessageTimeout,
   };
+  let existingFrame: number | null;
 
   onMount(() => {
     const handler = (ev: CustomEvent<OpenMessageBarDetail>) => {
       snackbarDetails = {...ev.detail, timeout: defaultMessageTimeout};
-      (snackbar as any).open();
 
       let previousTimestamp = 0;
 
-      requestAnimationFrame(function handleTick(timestamp) {
+      if (existingFrame !== null) {
+        cancelAnimationFrame(existingFrame);
+        snackbar.close();
+      }
+
+      (snackbar as any).open();
+
+      existingFrame = requestAnimationFrame(function handleTick(timestamp) {
         if (previousTimestamp === 0) {
           previousTimestamp = timestamp;
         }
+
         snackbarDetails.timeout -= timestamp - previousTimestamp;
         previousTimestamp = timestamp;
+
         if (snackbarDetails.timeout <= 0) {
           snackbarDetails.timeout = 0;
+          existingFrame = null;
           return;
         }
-        requestAnimationFrame(handleTick);
+        existingFrame = requestAnimationFrame(handleTick);
       });
     };
 
