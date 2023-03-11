@@ -67,5 +67,6 @@ declare global {
     'create-file': CustomEvent<{ path: string }>;
     'request-for-file-creation': CustomEvent<{ key: string }>;
     'workspace-detail-edited': CustomEvent;
+    'export-file-request': CustomEvent;
   }
 }
