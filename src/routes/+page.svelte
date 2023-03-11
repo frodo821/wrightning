@@ -34,6 +34,72 @@
     return false;
   }
 
+  onMount(() => {
+    const abortController = new AbortController();
+
+    window.addEventListener('content-changed', () => {
+      if (!fs.ready) { return; }
+      files[currentFileIndex].content = JSON.stringify(node);
+      fs.saveFile(files[currentFileIndex]);
+    }, { signal: abortController.signal });
+
+    window.addEventListener('workspace-detail-edited', () => {
+      if (!fs.ready) { return; }
+      fs.saveWorkspace(workspaces[currentWorkspaceIndex]);
+    }, { signal: abortController.signal });
+
+    window.addEventListener('create-file', async ({ detail: { path } }) => {
+      if (!fs.ready) { return; }
+      if (files.find(it => collidesName(path, it.path)) !== undefined) {
+        message.error(`File name ${path} conflicts existing file.`);
+        return;
+      }
+
+      const file = await fs.createFile(
+        workspaces[currentWorkspaceIndex].id,
+        path,
+        JSON.stringify(nodes.createTextNode(''))
+      );
+
+      currentFileIndex = files.length;
+      files = [...files, file];
+    }, { signal: abortController.signal });
+
+    window.addEventListener('file-metadata-changed', async ({ detail: { id } }) => {
+      if (!fs.ready) { return; }
+      const target = files.find((it) => it.id === id);
+
+      if (typeof target === 'undefined') {
+        const file = await fs.getFile(workspaces[currentWorkspaceIndex].id, id);
+
+        if (typeof file === 'undefined') {
+          message.error('Internal error detected. Please try again later.');
+        } else {
+          files = [...files, file];
+        }
+        return;
+      }
+
+      fs.saveFile(target);
+      files = files;
+    }, { signal: abortController.signal });
+
+    window.addEventListener('open-file', ({ detail: { file } }) => {
+      if (!fs.ready) { return; }
+      const fi = files.findIndex((it) => it.path === file.path);
+
+      if (fi === -1) {
+        message.error(`File ${file.path} not found.`);
+      } else {
+        currentFileIndex = fi;
+      }
+    }, { signal: abortController.signal });
+
+    return () => {
+      abortController.abort();
+    }
+  });
+
   onMount(async () => {
     try {
       eventManager.initialize();
@@ -41,61 +107,7 @@
 
       await fs.waitForReady;
       workspaces = await fs.getWorkspaces();
-
       files = await fs.getFiles(workspaces[currentWorkspaceIndex].id);
-
-      window.addEventListener('content-changed', () => {
-        files[currentFileIndex].content = JSON.stringify(node);
-        fs.saveFile(files[currentFileIndex]);
-      });
-
-      window.addEventListener('workspace-detail-edited', () => {
-        fs.saveWorkspace(workspaces[currentWorkspaceIndex]);
-      });
-
-      window.addEventListener('create-file', async ({ detail: { path } }) => {
-        if (files.find(it => collidesName(path, it.path)) !== undefined) {
-          message.error(`File name ${path} conflicts existing file.`);
-          return;
-        }
-
-        const file = await fs.createFile(
-          workspaces[currentWorkspaceIndex].id,
-          path,
-          JSON.stringify(nodes.createTextNode(''))
-        );
-
-        currentFileIndex = files.length;
-        files = [...files, file];
-      });
-
-      window.addEventListener('file-metadata-changed', async ({ detail: { id } }) => {
-        const target = files.find((it) => it.id === id);
-
-        if (typeof target === 'undefined') {
-          const file = await fs.getFile(workspaces[currentWorkspaceIndex].id, id);
-
-          if (typeof file === 'undefined') {
-            message.error('Internal error detected. Please try again later.');
-          } else {
-            files = [...files, file];
-          }
-          return;
-        }
-
-        fs.saveFile(target);
-        files = files;
-      });
-
-      window.addEventListener('open-file', ({ detail: { file } }) => {
-        const fi = files.findIndex((it) => it.path === file.path);
-
-        if (fi === -1) {
-          message.error(`File ${file.path} not found.`);
-        } else {
-          currentFileIndex = fi;
-        }
-      });
     } catch (err: any) {
       message.fatal(`${err}`);
     }
