@@ -38,3 +38,15 @@
     {/if}
   </li>
 {/if}
+
+<style lang="scss">
+  ul {
+    &.children {
+      padding-inline-start: 1.5rem;
+    }
+  }
+
+  a {
+    user-select: none;
+  }
+</style>

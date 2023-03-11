@@ -5,15 +5,20 @@
 
   export let shortcut: string | undefined;
   export let menuLabel: string;
-  export let anchorCorner: keyof typeof Corner = "BOTTOM_LEFT";
+  export let anchorCorner: keyof typeof Corner = 'BOTTOM_LEFT';
 
   let surf: MenuSurface | undefined;
 </script>
 
-
 <div class="menu-item-wrapper" style:float="left">
-  <Button style="max-height: 2rem" aria-keyshortcuts={shortcut} on:click={() => surf?.setOpen(true)}>{menuLabel}</Button>
-  <MenuSurface anchorCorner={anchorCorner} bind:this={surf} on:click={() => surf?.setOpen(false)}>
+  <Button
+    style="max-height: 2rem"
+    aria-keyshortcuts={shortcut}
+    on:click={() => surf?.setOpen(!surf.isOpen())}
+  >
+    {menuLabel}
+  </Button>
+  <MenuSurface {anchorCorner} bind:this={surf} on:click={() => surf?.setOpen(false)} on:SMUI:close>
     <List>
       <slot />
     </List>

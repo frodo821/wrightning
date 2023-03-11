@@ -1,40 +1,77 @@
 <script lang="ts">
   import * as nodes from '../data/structure';
   import TextEditor from '../components/TextEditor.svelte';
-  import EditorLeftSideMenu from '../components/EditorLeftSideMenu.svelte';
+  import EditorLeftSideMenu from '../components/explorer/EditorLeftSideMenu.svelte';
   import EditorHeader from '../components/header/EditorHeader.svelte';
+  import eventManager from '../events/eventManager';
+  import { onMount } from 'svelte';
+  import fs from '../infrastructure/fs';
+  import message from '../events/message';
+  import type { File, Workspace } from '../types/files';
 
-  let node: nodes.DataNode = nodes.createParagraphNode([
-    nodes.createTextNode('Hello, world!'),
-  ]);
+  let workspaces: Workspace[] = [];
+  let currentWorkspaceIndex: number = 0;
+  let files: File[] = [];
+  let currentFileIndex: number = 0;
 
-  if ('window' in globalThis) {
-    (window as any).text = node;
-  }
+  let node: nodes.DataNode = nodes.createParagraphNode([nodes.createTextNode('Hello, world!')]);
 
-  if ('localStorage' in globalThis) {
-    const saved = localStorage.getItem('content');
-    if (saved) {
-      node = JSON.parse(saved);
+  $: {
+    if (files[currentFileIndex] !== undefined) {
+      node = JSON.parse(files[currentFileIndex].content);
     }
   }
-</script>
 
+  onMount(async () => {
+    try {
+      eventManager.initialize();
+      fs.initialize();
+
+      await fs.waitForReady;
+      workspaces = await fs.getWorkspaces();
+
+      files = await fs.getFiles(workspaces[currentWorkspaceIndex].id);
+
+      window.addEventListener('content-changed', () => {
+        files[currentFileIndex].content = JSON.stringify(node);
+        fs.saveFile(files[currentFileIndex]);
+      });
+
+      window.addEventListener('workspace-detail-edited', () => {
+        fs.saveWorkspace(workspaces[currentWorkspaceIndex]);
+      });
+
+      window.addEventListener('open-file', (ev) => {
+        const { file } = ev.detail;
+        const fi = files.findIndex((it) => it.path === file.path);
+
+        if (fi === -1) {
+          message.error(`File ${file.path} not found.`);
+        } else {
+          currentFileIndex = fi;
+        }
+      });
+    } catch (err: any) {
+      message.fatal(`${err}`);
+    }
+  });
+</script>
 
 <div class="editor-layout">
   <div class="header">
     <EditorHeader />
   </div>
   <div class="sidebar-left">
-    <EditorLeftSideMenu />
+    {#if workspaces.length > currentWorkspaceIndex}
+      <EditorLeftSideMenu workspace={workspaces[currentWorkspaceIndex]} {files} />
+    {/if}
   </div>
   <div class="main">
     <TextEditor {node} />
   </div>
-  <div class="sidebar-right"></div>
-  <div class="footer"></div>
+  <div class="sidebar-right" />
+  <div class="footer" />
 </div>
-
 
 <style lang="scss">
   :global(body) {
@@ -49,9 +86,9 @@
     grid-template-rows: 2rem 1fr 2rem;
     gap: 0px 0px;
     grid-template-areas:
-      "header header header"
-      "sidebar-left main sidebar-right"
-      "footer footer footer";
+      'header header header'
+      'sidebar-left main sidebar-right'
+      'footer footer footer';
     width: 100vw;
     height: 100vh;
 

@@ -2,16 +2,23 @@
   import type * as nodes from '../data/structure';
   import NodeTextEditor from './node-editor/NodeTextEditor.svelte';
   import NodeOutline from './node-editor/NodeOutline.svelte';
+  import EventDispatcher from './EventDispatcher.svelte';
+  import NotificationMessage from './widgets/NotificationMessage.svelte';
+  import ModalDialog from './widgets/ModalDialog.svelte';
 
   export let node: nodes.DataNode;
 </script>
+
+<NotificationMessage />
+<ModalDialog />
+<EventDispatcher />
 
 <div class="editor-container">
   <div class="editor">
     <NodeTextEditor
       {node}
       notifyChangesToParent={() => {
-        localStorage.setItem('content', JSON.stringify(node));
+        window.dispatchEvent(new CustomEvent('content-changed'));
         node = node;
       }}
     />

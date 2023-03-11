@@ -15,6 +15,16 @@
   let isExtended: boolean = true;
   let editor: HTMLTextAreaElement;
 
+  $: {
+    if (typeof editor !== 'undefined' && editor !== null) {
+      editor.style.height = '0';
+      editor.style.height = `${Math.max(editor.scrollHeight, 80)}px`;
+    }
+    if (typeof node !== 'undefined' && node.type === 'text') {
+      let _ = node.text;
+    }
+  }
+
   function textAreaOnKeyDown(event: EventArg<KeyboardEvent, HTMLTextAreaElement>) {
     if (!event.ctrlKey) {
       return;
@@ -63,7 +73,7 @@
   }
 </script>
 
-<div class="nte-root" id={`${node.id}`}>
+<div class="nte-root" id={`${node.id}`} tabindex="-1">
   <div class="nte-header" />
   <div class="nte-title">
     <button
@@ -88,10 +98,6 @@
           bind:value={node.text}
           bind:this={editor}
           on:keydown={textAreaOnKeyDown}
-          on:input={() => {
-            editor.style.height = '0';
-            editor.style.height = `${Math.max(editor.scrollHeight, 80)}px`;
-          }}
           placeholder="セクション本文を入力する"
         />
       {:else}
@@ -242,7 +248,7 @@
         word-wrap: break-word;
         font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo,
           sans-serif;
-        font-size: 1.2rem;
+        font-size: 0.9rem;
         padding: 0.3rem;
         border: none;
         border-bottom: solid 1px gray;
@@ -298,8 +304,9 @@
     background: white;
   }
 
-  .nte-root .nte-content:focus-within+.nte-footer,
-  .nte-root:hover > .nte-footer {
+  .nte-root:has(>.nte-title :focus) > .nte-footer,
+  .nte-root:has(>.nte-content > textarea:focus) > .nte-footer,
+  .nte-root:focus > .nte-footer {
     opacity: 1;
   }
 </style>
