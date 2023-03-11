@@ -2,8 +2,7 @@
   import type * as Nodes from '../../data/structure';
   import { Item, Separator, Text } from '@smui/list';
   import HeaderMenu from './HeaderMenu.svelte';
-
-  export let node: Nodes.DataNode | null = null;
+  import EditorHeaderItem from './EditorHeaderItem.svelte';
 </script>
 
 <div class="header-container">
@@ -33,9 +32,9 @@
     <Item>
       <Text>Download Workspace</Text>
     </Item>
-    <Item>
-      <Text>Export File As...</Text>
-    </Item>
+    <EditorHeaderItem eventName='export-file-request'>
+      Export File As...
+    </EditorHeaderItem>
     <Separator />
     <Item>
       <Text>Close</Text>
