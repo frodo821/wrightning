@@ -33,6 +33,11 @@
       controller.abort();
     };
   });
+
+  const focusHandler = () => self?.dispatchEvent(new CustomEvent(
+    'select-entry-changed',
+    { detail: { key: parentKey }, bubbles: true }
+  ));
 </script>
 
 <details
@@ -40,12 +45,11 @@
   class:root={parentKey === ''}
   open={parentKey === ''}
   bind:this={self}
+  tabindex="-1"
+  on:focus={focusHandler}
 >
-  <summary>{parentKey}</summary>
-  <ul tabindex="-1" on:focus={() => self?.dispatchEvent(new CustomEvent(
-    'select-entry-changed',
-    { detail: { key: parentKey }, bubbles: true }
-  ))}>
+  <summary on:focus={focusHandler}>{parentKey.split('/').reverse()[0]}</summary>
+  <ul>
     {#if createNewFile}
       <FileEntry {parentKey} oncancellation={() => createNewFile = false} />
     {/if}
@@ -64,15 +68,37 @@
 </details>
 
 <style lang="scss">
+  summary {
+    user-select: none;
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
   details.root {
     > summary::marker {
       content: none;
     }
   }
 
+  details:focus,
+  details:has(> summary:focus) {
+    background-color: lightgray;
+  }
+
   details:not(.root) {
     padding-left: 1rem;
     border-left: dotted 1px gray;
+
+    > summary::marker {
+      font-family: 'Material Icons';
+      content: "folder";
+    }
+
+    &[open] > summary::marker {
+      content: "folder_open";
+    }
   }
 
   ul {
