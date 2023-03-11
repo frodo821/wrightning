@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { collator } from '../../data/sorting';
   import FileEntry from './FileEntry.svelte';
   import { type DirTree, dirTreeMarker } from './type';
 
@@ -48,7 +49,7 @@
     {#if createNewFile}
       <FileEntry {parentKey} oncancellation={() => createNewFile = false} />
     {/if}
-    {#each Object.entries(tree) as [key, entry]}
+    {#each Object.entries(tree).sort(([a], [b]) => collator.compare(a, b)) as [key, entry]}
       {#key key}
         {#if dirTreeMarker in entry}
           <li>

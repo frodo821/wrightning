@@ -56,7 +56,7 @@
         {workspace.name}
         <div class="actions">
           <IconButton class="material-icons" on:click={fileCreationHandler}>note_add</IconButton>
-          <IconButton class="material-icons">create_new_folder</IconButton>
+          <!--IconButton class="material-icons">create_new_folder</IconButton-->
         </div>
       </summary>
       <FileTree {tree} />
