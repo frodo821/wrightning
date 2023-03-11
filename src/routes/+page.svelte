@@ -22,6 +22,18 @@
     }
   }
 
+  function collidesName(path: string, existing: string): boolean {
+    if (existing.match(new RegExp(`^${path}(?:/|$)`))) {
+      return true;
+    }
+
+    if (path.match(`^${existing}(?:/|$)`)) {
+      return true;
+    }
+
+    return false;
+  }
+
   onMount(async () => {
     try {
       eventManager.initialize();
@@ -42,6 +54,11 @@
       });
 
       window.addEventListener('create-file', async ({ detail: { path } }) => {
+        if (files.find(it => collidesName(path, it.path)) !== undefined) {
+          message.error(`File name ${path} conflicts existing file.`);
+          return;
+        }
+
         const file = await fs.createFile(
           workspaces[currentWorkspaceIndex].id,
           path,
