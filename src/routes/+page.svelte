@@ -41,8 +41,36 @@
         fs.saveWorkspace(workspaces[currentWorkspaceIndex]);
       });
 
-      window.addEventListener('open-file', (ev) => {
-        const { file } = ev.detail;
+      window.addEventListener('create-file', async ({ detail: { path } }) => {
+        const file = await fs.createFile(
+          workspaces[currentWorkspaceIndex].id,
+          path,
+          JSON.stringify(nodes.createTextNode(''))
+        );
+
+        currentFileIndex = files.length;
+        files = [...files, file];
+      });
+
+      window.addEventListener('file-metadata-changed', async ({ detail: { id } }) => {
+        const target = files.find((it) => it.id === id);
+
+        if (typeof target === 'undefined') {
+          const file = await fs.getFile(workspaces[currentWorkspaceIndex].id, id);
+
+          if (typeof file === 'undefined') {
+            message.error('Internal error detected. Please try again later.');
+          } else {
+            files = [...files, file];
+          }
+          return;
+        }
+
+        fs.saveFile(target);
+        files = files;
+      });
+
+      window.addEventListener('open-file', ({ detail: { file } }) => {
         const fi = files.findIndex((it) => it.path === file.path);
 
         if (fi === -1) {

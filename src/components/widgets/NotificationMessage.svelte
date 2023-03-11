@@ -5,7 +5,7 @@
   import type { OpenMessageBarDetail } from '../../types/eventArgs';
   import { onMount } from 'svelte';
 
-  const defaultMessageTimeout = 10000;
+  const defaultMessageTimeout = 5000;
 
   let snackbar: Snackbar;
   let snackbarDetails: OpenMessageBarDetail & { timeout: number } = {

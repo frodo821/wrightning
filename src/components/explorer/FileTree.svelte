@@ -1,47 +1,81 @@
 <script lang="ts">
-  import type { File } from '../../types/files';
+  import { onMount } from 'svelte';
+  import FileEntry from './FileEntry.svelte';
   import { type DirTree, dirTreeMarker } from './type';
 
   export let tree: DirTree;
   export let parentKey: string = '';
 
-  const anchorHandler = (target: File) => (ev: Event) => {
-    ev.preventDefault();
-    window.dispatchEvent(new CustomEvent('open-file', {
-      detail: {
-        file: target,
-      },
-    }));
-  }
+  let self: HTMLDetailsElement | null;
 
-  const enterAsClick = (ev: KeyboardEvent) => {
-    if (ev.code === 'Enter') {
-      ev.preventDefault();
-      (ev.currentTarget as any).click();
-    }
-  }
+  let createNewFile = false;
+
+  onMount(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    window.addEventListener(
+      'request-for-file-creation',
+      ({ detail: { key } }) => {
+        if (key === parentKey) {
+          createNewFile = true;
+        }
+      },
+      { signal }
+    );
+
+    window.addEventListener('create-file', () => {
+      createNewFile = false;
+    }, { signal });
+
+    return () => {
+      controller.abort();
+    };
+  });
 </script>
 
-<ul>
-  {#each Object.entries(tree) as [key, entry]}
-    {#if dirTreeMarker in entry}
-      <li>
-        <svelte:self tree={entry} parentKey={`${parentKey}/${key}`} />
-      </li>
-    {:else}
-      <li tabindex="-1" on:click={anchorHandler(entry)} on:keydown={enterAsClick}>
-        <a tabindex="-1" href="/">{key}</a>
-      </li>
+<details
+  class="container"
+  class:root={parentKey === ''}
+  open={parentKey === ''}
+  bind:this={self}
+>
+  <summary>{parentKey}</summary>
+  <ul tabindex="-1" on:focus={() => self?.dispatchEvent(new CustomEvent(
+    'select-entry-changed',
+    { detail: { key: parentKey }, bubbles: true }
+  ))}>
+    {#if createNewFile}
+      <FileEntry {parentKey} oncancellation={() => createNewFile = false} />
     {/if}
-  {/each}
-</ul>
+    {#each Object.entries(tree) as [key, entry]}
+      {#key key}
+        {#if dirTreeMarker in entry}
+          <li>
+            <svelte:self tree={entry} parentKey={`${parentKey}/${key}`} />
+          </li>
+        {:else}
+          <FileEntry {entry} name={key} {parentKey} />
+        {/if}
+      {/key}
+    {/each}
+  </ul>
+</details>
 
 <style lang="scss">
-  a {
-    user-select: none;
+  details.root {
+    > summary::marker {
+      content: none;
+    }
   }
 
-  li:focus, li:has(> a:focus) {
-    background-color: lightgray;
+  details:not(.root) {
+    padding-left: 1rem;
+    border-left: dotted 1px gray;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 0;
   }
 </style>

@@ -63,6 +63,9 @@ declare global {
     'open-workspace': CustomEvent<OpenWorkspaceEventDetail>;
     'open-file': CustomEvent<OpenFileEventDetail>;
     'content-changed': CustomEvent;
+    'file-metadata-changed': CustomEvent<{ id: string }>;
+    'create-file': CustomEvent<{ path: string }>;
+    'request-for-file-creation': CustomEvent<{ key: string }>;
     'workspace-detail-edited': CustomEvent;
   }
 }

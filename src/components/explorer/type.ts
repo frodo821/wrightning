@@ -7,4 +7,12 @@ export type DirTree = {
   [key: string]: DirTree | File;
 };
 
+declare global {
+  namespace svelte.JSX {
+    interface HTMLAttributes<T> {
+      'onselect-entry-changed': (ev: CustomEvent<{ key: string }>) => void;
+    }
+  }
+}
+
 export default {};
