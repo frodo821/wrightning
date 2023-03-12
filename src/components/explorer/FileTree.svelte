@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { collator } from '../../data/sorting';
   import FileEntry from './FileEntry.svelte';
+  import { currentSelectionKey } from './store';
   import { type DirTree, dirTreeMarker } from './type';
 
   export let tree: DirTree;
@@ -38,10 +39,7 @@
     };
   });
 
-  const focusHandler = () =>
-    self?.dispatchEvent(
-      new CustomEvent('select-entry-changed', { detail: { key: parentKey }, bubbles: true }),
-    );
+  const focusHandler = () => currentSelectionKey.set(parentKey);
 </script>
 
 <details

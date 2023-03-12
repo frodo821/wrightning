@@ -1,6 +1,7 @@
 <script lang="ts">
   import message from '../../events/message';
   import type { File } from '../../types/files';
+  import { currentSelectionKey } from './store';
 
   export let entry: File | null = null;
   export let name: string = '';
@@ -14,7 +15,7 @@
   let self: HTMLLIElement | null;
   let input: HTMLInputElement | null;
 
-  $: if (nameEditing) {
+  $: if (nameEditing || entry === null) {
     input?.focus();
   }
 
@@ -77,9 +78,7 @@
   on:click={anchorHandler}
   on:keydown={fileKeyHandler}
   on:focus={() => {
-    self?.dispatchEvent(
-      new CustomEvent('select-entry-changed', { detail: { key: parentKey }, bubbles: true }),
-    );
+    currentSelectionKey.set(parentKey);
   }}
   bind:this={self}
 >
