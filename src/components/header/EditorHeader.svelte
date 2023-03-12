@@ -7,9 +7,7 @@
 
 <div class="header-container">
   <HeaderMenu shortcut="Alt+F" menuLabel="File">
-    <Item>
-      <Text>New File</Text>
-    </Item>
+    <EditorHeaderItem eventName="request-for-file-creation">New File</EditorHeaderItem>
     <Item>
       <Text>Open File</Text>
     </Item>
