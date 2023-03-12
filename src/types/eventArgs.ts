@@ -55,6 +55,8 @@ export type OpenMessageBarDetail = {
   severity: MessageSeverity;
 };
 
+type EventListener<T = never> = (ev: CustomEvent<T>) => void;
+
 declare global {
   interface WindowEventMap {
     'save-as': CustomEvent<SaveAsEventDetail>;
@@ -68,5 +70,21 @@ declare global {
     'request-for-file-creation': CustomEvent<{ key: string }>;
     'workspace-detail-edited': CustomEvent;
     'export-file-request': CustomEvent;
+  }
+
+  namespace svelte.JSX {
+    interface HTMLProps<T extends 'svelte:window'> {
+      'onsave-as'?: EventListener<SaveAsEventDetail>;
+      'ondialog-open'?: EventListener<DialogOpenDetail>;
+      'onsnackbar-open'?: EventListener<OpenMessageBarDetail>;
+      'onopen-workspace'?: EventListener<OpenWorkspaceEventDetail>;
+      'onopen-file'?: EventListener<OpenFileEventDetail>;
+      'oncontent-changed'?: EventListener;
+      'onfile-metadata-changed'?: EventListener<{ id: string }>;
+      'oncreate-file'?: EventListener<{ path: string }>;
+      'onrequest-for-file-creation'?: EventListener<{ key: string }>;
+      'onworkspace-detail-edited'?: EventListener;
+      'onexport-file-request'?: EventListener;
+    }
   }
 }

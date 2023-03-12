@@ -9,6 +9,13 @@
   import message from '../events/message';
   import type { File, Workspace } from '../types/files';
 
+  import ContentChanged from '../components/event-listener/ContentChanged.svelte';
+  import WorkspaceDetailEdited from '../components/event-listener/WorkspaceDetailEdited.svelte';
+  import CreateFile from '../components/event-listener/CreateFile.svelte';
+  import FileMetadataChanged from '../components/event-listener/FileMetadataChanged.svelte';
+  import OpenFile from '../components/event-listener/OpenFile.svelte';
+  import ExportFileRequest from '../components/event-listener/ExportFileRequest.svelte';
+
   let workspaces: Workspace[] = [];
   let currentWorkspaceIndex: number = 0;
   let files: File[] = [];
@@ -21,144 +28,6 @@
       node = JSON.parse(files[currentFileIndex].content);
     }
   }
-
-  function collidesName(path: string, existing: string): boolean {
-    if (existing.match(new RegExp(`^${path}(?:/|$)`))) {
-      return true;
-    }
-
-    if (path.match(`^${existing}(?:/|$)`)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  onMount(() => {
-    const abortController = new AbortController();
-
-    window.addEventListener(
-      'content-changed',
-      () => {
-        if (!fs.ready) {
-          return;
-        }
-        files[currentFileIndex].content = JSON.stringify(node);
-        fs.saveFile(files[currentFileIndex]);
-      },
-      { signal: abortController.signal },
-    );
-
-    window.addEventListener(
-      'workspace-detail-edited',
-      () => {
-        if (!fs.ready) {
-          return;
-        }
-        fs.saveWorkspace(workspaces[currentWorkspaceIndex]);
-      },
-      { signal: abortController.signal },
-    );
-
-    window.addEventListener(
-      'create-file',
-      async ({ detail: { path } }) => {
-        if (!fs.ready) {
-          return;
-        }
-        if (files.find((it) => collidesName(path, it.path)) !== undefined) {
-          message.error(`File name ${path} conflicts existing file.`);
-          return;
-        }
-
-        const file = await fs.createFile(
-          workspaces[currentWorkspaceIndex].id,
-          path,
-          JSON.stringify(nodes.createTextNode('')),
-        );
-
-        currentFileIndex = files.length;
-        files = [...files, file];
-      },
-      { signal: abortController.signal },
-    );
-
-    window.addEventListener(
-      'file-metadata-changed',
-      async ({ detail: { id } }) => {
-        if (!fs.ready) {
-          return;
-        }
-        const target = files.find((it) => it.id === id);
-
-        if (typeof target === 'undefined') {
-          const file = await fs.getFile(workspaces[currentWorkspaceIndex].id, id);
-
-          if (typeof file === 'undefined') {
-            message.error('Internal error detected. Please try again later.');
-          } else {
-            files = [...files, file];
-          }
-          return;
-        }
-
-        fs.saveFile(target);
-        files = files;
-      },
-      { signal: abortController.signal },
-    );
-
-    window.addEventListener(
-      'open-file',
-      ({ detail: { file } }) => {
-        if (!fs.ready) {
-          return;
-        }
-        const fi = files.findIndex((it) => it.path === file.path);
-
-        if (fi === -1) {
-          message.error(`File ${file.path} not found.`);
-        } else {
-          currentFileIndex = fi;
-        }
-      },
-      { signal: abortController.signal },
-    );
-
-    window.addEventListener(
-      'export-file-request',
-      () => {
-        if (typeof files[currentFileIndex] === 'undefined') {
-          message.error('No file to export.');
-          return;
-        }
-
-        const a = document.createElement('a');
-        a.style.position = 'absolute';
-        a.style.opacity = '0';
-
-        const markdown = nodes.toMarkdown(JSON.parse(files[currentFileIndex].content));
-
-        const blob = new Blob([markdown], {
-          type: 'text/plain',
-        });
-
-        const currentPath = files[currentFileIndex].path;
-
-        a.href = URL.createObjectURL(blob);
-        a.download = `${currentPath.split('/').reverse()[0]}.md`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        message.success(`File ${currentPath} exported.`);
-      },
-      { signal: abortController.signal },
-    )
-
-    return () => {
-      abortController.abort();
-    };
-  });
 
   onMount(async () => {
     try {
@@ -180,6 +49,15 @@
     }
   });
 </script>
+
+{#if workspaces.length > currentWorkspaceIndex}
+  <ContentChanged file={files[currentFileIndex]} {node} />
+  <WorkspaceDetailEdited workspace={workspaces[currentWorkspaceIndex]} />
+  <CreateFile workspace={workspaces[currentWorkspaceIndex]} bind:files bind:currentFileIndex />
+  <FileMetadataChanged workspace={workspaces[currentWorkspaceIndex]} bind:files />
+  <OpenFile {files} bind:currentFileIndex />
+  <ExportFileRequest file={files[currentFileIndex]} />
+{/if}
 
 <div class="editor-layout">
   <div class="header">
