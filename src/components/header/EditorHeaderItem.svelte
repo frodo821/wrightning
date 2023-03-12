@@ -5,7 +5,7 @@
   let currentSelectionKey: string;
 </script>
 
-{#if (eventName = 'request-for-file-creation')}
+{#if eventName === 'request-for-file-creation'}
   <Item
     on:click={() => {
       window.dispatchEvent(
