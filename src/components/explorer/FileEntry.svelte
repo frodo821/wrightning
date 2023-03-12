@@ -12,6 +12,11 @@
   let intermediateName = name;
 
   let self: HTMLLIElement | null;
+  let input: HTMLInputElement | null;
+
+  $: if (nameEditing) {
+    input?.focus();
+  }
 
   const anchorHandler = (ev: Event) => {
     ev.preventDefault();
@@ -36,6 +41,7 @@
     ev.preventDefault();
     ev.stopPropagation();
     oncancellation();
+    self?.focus();
     nameEditing = false;
   };
 
@@ -84,7 +90,7 @@
         bind:value={intermediateName}
         on:keydown={nameEditHandler}
         on:blur={blurHandler}
-        autofocus
+        bind:this={input}
       />
     {:else}
       {name}
