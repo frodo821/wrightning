@@ -1,7 +1,7 @@
 <script lang="ts">
-  import message from "../../events/message";
-  import fs from "../../infrastructure/fs";
-  import type { File } from "../../types/files";
+  import message from '../../events/message';
+  import fs from '../../infrastructure/fs';
+  import type { File } from '../../types/files';
 
   export let files: File[];
   export let currentFileIndex: number;

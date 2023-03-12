@@ -1,6 +1,6 @@
 <script lang="ts">
-  import message from "../../events/message";
-  import type { File } from "../../types/files";
+  import message from '../../events/message';
+  import type { File } from '../../types/files';
   import * as nodes from '../../data/structure';
 
   export let file: File | undefined;

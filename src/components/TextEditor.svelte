@@ -2,7 +2,6 @@
   import type * as nodes from '../data/structure';
   import NodeTextEditor from './node-editor/NodeTextEditor.svelte';
   import NodeOutline from './node-editor/NodeOutline.svelte';
-  import EventDispatcher from './EventDispatcher.svelte';
   import NotificationMessage from './widgets/NotificationMessage.svelte';
   import ModalDialog from './widgets/ModalDialog.svelte';
 
@@ -11,7 +10,6 @@
 
 <NotificationMessage />
 <ModalDialog />
-<EventDispatcher />
 
 <div class="editor-container">
   <div class="editor">

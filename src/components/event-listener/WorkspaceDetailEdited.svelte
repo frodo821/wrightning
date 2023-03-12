@@ -1,6 +1,6 @@
 <script lang="ts">
-  import fs from "../../infrastructure/fs";
-  import type { Workspace } from "../../types/files";
+  import fs from '../../infrastructure/fs';
+  import type { Workspace } from '../../types/files';
 
   export let workspace: Workspace;
 </script>

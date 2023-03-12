@@ -59,6 +59,8 @@
   <ExportFileRequest file={files[currentFileIndex]} />
 {/if}
 
+<svelte:window on:keydown={eventManager.handleKeyUp} />
+
 <div class="editor-layout">
   <div class="header">
     <EditorHeader />
@@ -76,9 +78,7 @@
         <h1>No files to open</h1>
         <p>
           There are no files to open. You can
-          <a href="/" on:click={(ev) => ev.preventDefault()}>
-            create a new file
-          </a>
+          <a href="/" on:click={(ev) => ev.preventDefault()}> create a new file </a>
           to open.
         </p>
       </div>

@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as nodes from '../../data/structure';
-  import message from "../../events/message";
-  import fs from "../../infrastructure/fs";
-  import type { File, Workspace } from "../../types/files";
+  import message from '../../events/message';
+  import fs from '../../infrastructure/fs';
+  import type { File, Workspace } from '../../types/files';
 
   export let files: File[];
   export let workspace: Workspace;
@@ -32,11 +32,7 @@
       return;
     }
 
-    const file = await fs.createFile(
-      workspace.id,
-      path,
-      JSON.stringify(nodes.createTextNode('')),
-    );
+    const file = await fs.createFile(workspace.id, path, JSON.stringify(nodes.createTextNode('')));
 
     currentFileIndex = files.length;
     files = [...files, file];

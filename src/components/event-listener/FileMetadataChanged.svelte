@@ -1,7 +1,7 @@
 <script lang="ts">
-  import message from "../../events/message";
-  import fs from "../../infrastructure/fs";
-  import type { File, Workspace } from "../../types/files";
+  import message from '../../events/message';
+  import fs from '../../infrastructure/fs';
+  import type { File, Workspace } from '../../types/files';
 
   export let workspace: Workspace;
   export let files: File[];
