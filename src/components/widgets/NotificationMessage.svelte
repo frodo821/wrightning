@@ -69,12 +69,3 @@
     progress={snackbarDetails.timeout / defaultMessageTimeout}
   />
 </Snackbar>
-
-<style lang="scss">
-  :global(.message-bar) {
-    :global(.remaining-time-indicator) {
-      position: absolute;
-      bottom: 0;
-    }
-  }
-</style>
