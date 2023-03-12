@@ -14,7 +14,7 @@
   let files: File[] = [];
   let currentFileIndex: number = 0;
 
-  let node: nodes.DataNode = nodes.createParagraphNode([nodes.createTextNode('Hello, world!')]);
+  let node: nodes.DataNode = nodes.createParagraphNode([nodes.createTextNode('')]);
 
   $: {
     if (files[currentFileIndex] !== undefined) {
@@ -114,6 +114,15 @@
       }
 
       files = await fs.getFiles(workspaces[currentWorkspaceIndex].id);
+
+      if (files.length === 0) {
+        const file = await fs.createFile(
+          workspaces[currentWorkspaceIndex].id,
+          'untitled',
+          JSON.stringify(node),
+        );
+        files = [file];
+      }
     } catch (err: any) {
       message.fatal(`${err}`);
       console.error(err);
