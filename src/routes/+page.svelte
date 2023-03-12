@@ -110,6 +110,7 @@
       files = await fs.getFiles(workspaces[currentWorkspaceIndex].id);
     } catch (err: any) {
       message.fatal(`${err}`);
+      console.error(err);
     }
   });
 </script>
