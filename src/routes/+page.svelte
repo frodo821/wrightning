@@ -14,8 +14,6 @@
   let files: File[] = [];
   let currentFileIndex: number = 0;
 
-  export const prerender = true;
-
   let node: nodes.DataNode = nodes.createParagraphNode([nodes.createTextNode('Hello, world!')]);
 
   $: {
