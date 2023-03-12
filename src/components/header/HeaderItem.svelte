@@ -1,8 +1,7 @@
 <script lang="ts">
   import { Item, Text } from '@smui/list';
 
-  type EventArgs<T extends CustomEvent> = T extends CustomEvent<infer U> ? U : never;
-  type EventArgsFactory<T extends Event> = T extends CustomEvent ? () => EventArgs<T> : never;
+  type EventArgsFactory<T extends Event> = T extends CustomEvent<infer U> ? () => U : never;
 
   type T = $$Generic<keyof WindowEventMap>;
 
