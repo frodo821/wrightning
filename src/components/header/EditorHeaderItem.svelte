@@ -5,7 +5,7 @@
 </script>
 
 <Item
-  action={() => {
+  on:click={() => {
     window.dispatchEvent(new CustomEvent(eventName));
   }}
 >
