@@ -2,12 +2,18 @@
   import type * as Nodes from '../../data/structure';
   import { Item, Separator, Text } from '@smui/list';
   import HeaderMenu from './HeaderMenu.svelte';
-  import EditorHeaderItem from './EditorHeaderItem.svelte';
+  import HeaderItem from './HeaderItem.svelte';
+  import { currentSelectionKey } from '../explorer/store';
 </script>
 
 <div class="header-container">
   <HeaderMenu shortcut="Alt+F" menuLabel="File">
-    <EditorHeaderItem eventName="request-for-file-creation">New File</EditorHeaderItem>
+    <HeaderItem
+      eventName="request-for-file-creation"
+      eventArgsFactory={() => ({ key: $currentSelectionKey ?? '' })}
+    >
+      New File
+    </HeaderItem>
     <Item>
       <Text>Open File</Text>
     </Item>
@@ -30,7 +36,7 @@
     <Item>
       <Text>Download Workspace</Text>
     </Item>
-    <EditorHeaderItem eventName="export-file-request">Export File As...</EditorHeaderItem>
+    <HeaderItem eventName="export-file-request">Export File As...</HeaderItem>
     <Separator />
     <Item>
       <Text>Close</Text>

@@ -3,12 +3,12 @@
   import type { Workspace, File } from '../../types/files';
   import FileTree from './FileTree.svelte';
   import { dirTreeMarker, type DirTree } from './type';
+  import { currentSelectionKey } from './store';
 
   export let workspace: Workspace;
   export let files: File[];
 
   let tree: DirTree;
-  let currentSelectionKey: string;
 
   $: tree = createDirectoryTree(files);
 
@@ -44,18 +44,13 @@
 
   const fileCreationHandler = () => {
     window.dispatchEvent(
-      new CustomEvent('request-for-file-creation', { detail: { key: currentSelectionKey ?? '' } }),
+      new CustomEvent('request-for-file-creation', { detail: { key: $currentSelectionKey ?? '' } }),
     );
   };
 </script>
 
 <div class="container">
-  <div
-    class="controls"
-    on:select-entry-changed={({ detail: { key } }) => {
-      currentSelectionKey = key;
-    }}
-  >
+  <div class="controls">
     <details open>
       <summary>
         {workspace.name}
