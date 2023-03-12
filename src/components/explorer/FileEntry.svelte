@@ -14,7 +14,7 @@
   let self: HTMLLIElement | null;
   let input: HTMLInputElement | null;
 
-  $: if (nameEditing) {
+  $: if (nameEditing || entry === null) {
     input?.focus();
   }
 
