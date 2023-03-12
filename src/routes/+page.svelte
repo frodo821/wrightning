@@ -125,6 +125,36 @@
       { signal: abortController.signal },
     );
 
+    window.addEventListener(
+      'export-file-request',
+      () => {
+        if (typeof files[currentFileIndex] === 'undefined') {
+          message.error('No file to export.');
+          return;
+        }
+
+        const a = document.createElement('a');
+        a.style.position = 'absolute';
+        a.style.opacity = '0';
+
+        const markdown = nodes.toMarkdown(JSON.parse(files[currentFileIndex].content));
+
+        const blob = new Blob([markdown], {
+          type: 'text/plain',
+        });
+
+        const currentPath = files[currentFileIndex].path;
+
+        a.href = URL.createObjectURL(blob);
+        a.download = `${currentPath.split('/').reverse()[0]}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        message.success(`File ${currentPath} exported.`);
+      },
+      { signal: abortController.signal },
+    )
+
     return () => {
       abortController.abort();
     };
@@ -144,15 +174,6 @@
       }
 
       files = await fs.getFiles(workspaces[currentWorkspaceIndex].id);
-
-      if (files.length === 0) {
-        const file = await fs.createFile(
-          workspaces[currentWorkspaceIndex].id,
-          '/untitled',
-          JSON.stringify(node),
-        );
-        files = [file];
-      }
     } catch (err: any) {
       message.fatal(`${err}`);
       console.error(err);
@@ -170,7 +191,20 @@
     {/if}
   </div>
   <div class="main">
-    <TextEditor {node} />
+    {#if files.length > currentFileIndex}
+      <TextEditor {node} />
+    {:else}
+      <div class="empty">
+        <h1>No files to open</h1>
+        <p>
+          There are no files to open. You can
+          <a href="/" on:click={(ev) => ev.preventDefault()}>
+            create a new file
+          </a>
+          to open.
+        </p>
+      </div>
+    {/if}
   </div>
   <div class="sidebar-right" />
   <div class="footer" />

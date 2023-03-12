@@ -251,3 +251,15 @@ export function canonicalizeNodes(node: DataNode): DataNode | null {
 
   return node;
 }
+
+export function toMarkdown(node: DataNode, depth?: number): string {
+  depth = depth || 1;
+
+  if (node.type === 'text') {
+    return `${'#'.repeat(depth)} ${node.title || '&lt;untitled&gt;'}
+${node.text}`;
+  }
+
+  return `${'#'.repeat(depth)} ${node.title || '&lt;untitled&gt;'}
+${node.children.map((it) => toMarkdown(it, depth! + 1)).join('\n\n')}`;
+}
