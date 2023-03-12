@@ -1,0 +1,19 @@
+<script lang="ts">
+  import { Item, Text } from '@smui/list';
+
+  type EventArgs<T extends CustomEvent> = T extends CustomEvent<infer U> ? U : never;
+  type EventArgsFactory<T extends Event> = T extends CustomEvent ? () => EventArgs<T> : never;
+
+  type T = $$Generic<keyof WindowEventMap>;
+
+  export let eventName: T;
+  export let eventArgsFactory: EventArgsFactory<WindowEventMap[T]> | undefined = undefined;
+</script>
+
+<Item
+  on:click={() => {
+    window.dispatchEvent(new CustomEvent(eventName, { detail: eventArgsFactory?.() }));
+  }}
+>
+  <Text><slot /></Text>
+</Item>
