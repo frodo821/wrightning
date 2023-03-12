@@ -107,6 +107,12 @@
 
       await fs.waitForReady;
       workspaces = await fs.getWorkspaces();
+
+      if (workspaces.length === 0) {
+        const workspace = await fs.createWorkspace('<default-workspace>');
+        workspaces = [workspace];
+      }
+
       files = await fs.getFiles(workspaces[currentWorkspaceIndex].id);
     } catch (err: any) {
       message.fatal(`${err}`);
