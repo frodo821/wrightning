@@ -118,7 +118,7 @@
       if (files.length === 0) {
         const file = await fs.createFile(
           workspaces[currentWorkspaceIndex].id,
-          'untitled',
+          '/untitled',
           JSON.stringify(node),
         );
         files = [file];
