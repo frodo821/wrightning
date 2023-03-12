@@ -17,7 +17,7 @@
 
   onMount(() => {
     const handler = (ev: CustomEvent<OpenMessageBarDetail>) => {
-      snackbarDetails = {...ev.detail, timeout: defaultMessageTimeout};
+      snackbarDetails = { ...ev.detail, timeout: defaultMessageTimeout };
 
       let previousTimestamp = 0;
 
@@ -64,7 +64,10 @@
   <Actions>
     <IconButton class="material-icons" title="Dismiss">close</IconButton>
   </Actions>
-  <LinearProgress class="remaining-time-indicator" progress={snackbarDetails.timeout/defaultMessageTimeout}/>
+  <LinearProgress
+    class="remaining-time-indicator"
+    progress={snackbarDetails.timeout / defaultMessageTimeout}
+  />
 </Snackbar>
 
 <style lang="scss">

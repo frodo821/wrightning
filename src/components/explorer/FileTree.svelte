@@ -22,22 +22,26 @@
           createNewFile = true;
         }
       },
-      { signal }
+      { signal },
     );
 
-    window.addEventListener('create-file', () => {
-      createNewFile = false;
-    }, { signal });
+    window.addEventListener(
+      'create-file',
+      () => {
+        createNewFile = false;
+      },
+      { signal },
+    );
 
     return () => {
       controller.abort();
     };
   });
 
-  const focusHandler = () => self?.dispatchEvent(new CustomEvent(
-    'select-entry-changed',
-    { detail: { key: parentKey }, bubbles: true }
-  ));
+  const focusHandler = () =>
+    self?.dispatchEvent(
+      new CustomEvent('select-entry-changed', { detail: { key: parentKey }, bubbles: true }),
+    );
 </script>
 
 <details
@@ -51,7 +55,7 @@
   <summary on:focus={focusHandler}>{parentKey.split('/').reverse()[0]}</summary>
   <ul>
     {#if createNewFile}
-      <FileEntry {parentKey} oncancellation={() => createNewFile = false} />
+      <FileEntry {parentKey} oncancellation={() => (createNewFile = false)} />
     {/if}
     {#each Object.entries(tree).sort(([a], [b]) => collator.compare(a, b)) as [key, entry]}
       {#key key}
@@ -93,11 +97,11 @@
 
     > summary::marker {
       font-family: 'Material Icons';
-      content: "folder";
+      content: 'folder';
     }
 
     &[open] > summary::marker {
-      content: "folder_open";
+      content: 'folder_open';
     }
   }
 

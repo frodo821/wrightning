@@ -17,7 +17,7 @@
     const handler = (ev: CustomEvent<DialogOpenDetail>) => {
       dialogDetails = ev.detail;
 
-      switch(dialogDetails.type) {
+      switch (dialogDetails.type) {
         case 'notice':
         case 'alert':
           onCloseHandler = dialogDetails.onOk;
@@ -35,7 +35,7 @@
     return () => {
       window.removeEventListener('dialog-open', handler);
     };
-  })
+  });
 
   const keyHandler = (ev: any) => {
     if (dialogDetails?.type !== 'prompt') {
@@ -51,7 +51,7 @@
       dialogDetails.onEnter?.(value || '');
       return;
     }
-  }
+  };
 </script>
 
 <Dialog

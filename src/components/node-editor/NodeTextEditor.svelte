@@ -77,7 +77,7 @@
   <div class="nte-header" />
   <div class="nte-title">
     <button
-      on:click={() => isExtended = !isExtended}
+      on:click={() => (isExtended = !isExtended)}
       class="nte-toggle-visible"
       class:extended={isExtended}
       class:retracted={!isExtended}
@@ -117,12 +117,19 @@
         {/each}
       {/if}
     {:else}
-      <div class="nte-retracted-body" tabindex="-1" on:click={() => isExtended = true} on:keydown={(e) => {
-        if (e.code === "Enter") {
-          isExtended = true;
-          e.preventDefault();
-        }
-      }}>...</div>
+      <div
+        class="nte-retracted-body"
+        tabindex="-1"
+        on:click={() => (isExtended = true)}
+        on:keydown={(e) => {
+          if (e.code === 'Enter') {
+            isExtended = true;
+            e.preventDefault();
+          }
+        }}
+      >
+        ...
+      </div>
     {/if}
   </div>
   {#if isExtended}
@@ -304,8 +311,8 @@
     background: white;
   }
 
-  .nte-root:has(>.nte-title :focus) > .nte-footer,
-  .nte-root:has(>.nte-content > textarea:focus) > .nte-footer,
+  .nte-root:has(> .nte-title :focus) > .nte-footer,
+  .nte-root:has(> .nte-content > textarea:focus) > .nte-footer,
   .nte-root:focus > .nte-footer {
     opacity: 1;
   }

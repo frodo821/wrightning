@@ -32,9 +32,7 @@
     <Item>
       <Text>Download Workspace</Text>
     </Item>
-    <EditorHeaderItem eventName='export-file-request'>
-      Export File As...
-    </EditorHeaderItem>
+    <EditorHeaderItem eventName="export-file-request">Export File As...</EditorHeaderItem>
     <Separator />
     <Item>
       <Text>Close</Text>

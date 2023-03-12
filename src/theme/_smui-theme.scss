@@ -40,7 +40,9 @@ a:visited {
 
   &.message-notice {
     @include mixins.fill-color(color-palette.$light-blue-500);
-    @include mixins.label-ink-color(theme-color.accessible-ink-color(color-palette.$light-blue-500));
+    @include mixins.label-ink-color(
+      theme-color.accessible-ink-color(color-palette.$light-blue-500)
+    );
   }
 
   &.message-warning {
@@ -50,7 +52,9 @@ a:visited {
 
   &.message-error {
     @include mixins.fill-color(color-palette.$deep-orange-500);
-    @include mixins.label-ink-color(theme-color.accessible-ink-color(color-palette.$deep-orange-500));
+    @include mixins.label-ink-color(
+      theme-color.accessible-ink-color(color-palette.$deep-orange-500)
+    );
   }
 
   &.message-fatal {

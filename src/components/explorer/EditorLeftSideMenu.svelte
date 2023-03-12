@@ -17,12 +17,12 @@
       [dirTreeMarker]: true,
     };
 
-    for(let file of files) {
+    for (let file of files) {
       const [name, ...fragments] = file.path.split('/').reverse();
 
       let current: DirTree = result;
 
-      for(let fragment of fragments.reverse()) {
+      for (let fragment of fragments.reverse()) {
         if (fragment === '') {
           continue;
         }
@@ -43,14 +43,19 @@
   }
 
   const fileCreationHandler = () => {
-    window.dispatchEvent(new CustomEvent('request-for-file-creation', { detail: { key: currentSelectionKey ?? '' } }));
-  }
+    window.dispatchEvent(
+      new CustomEvent('request-for-file-creation', { detail: { key: currentSelectionKey ?? '' } }),
+    );
+  };
 </script>
 
 <div class="container">
-  <div class="controls" on:select-entry-changed={({ detail: { key } }) => {
-    currentSelectionKey = key;
-  }}>
+  <div
+    class="controls"
+    on:select-entry-changed={({ detail: { key } }) => {
+      currentSelectionKey = key;
+    }}
+  >
     <details open>
       <summary>
         {workspace.name}
@@ -71,11 +76,11 @@
   }
   details {
     ::marker {
-      content: "expand_less";
+      content: 'expand_less';
       font-family: 'Material Icons';
     }
     &[open] ::marker {
-      content: "expand_more";
+      content: 'expand_more';
     }
     summary {
       user-select: none;

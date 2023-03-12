@@ -1,4 +1,4 @@
-import message from "./message";
+import message from './message';
 
 type ShortcutKey = {
   key: string;

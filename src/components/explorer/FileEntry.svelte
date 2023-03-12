@@ -32,6 +32,13 @@
     }
   };
 
+  const blurHandler = (ev: Event) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    oncancellation();
+    nameEditing = false;
+  };
+
   const nameEditHandler = async (ev: KeyboardEvent) => {
     if (ev.code === 'Enter') {
       if (intermediateName === '' || intermediateName.endsWith('/')) {
@@ -54,10 +61,7 @@
         nameEditing = false;
       }
     } else if (ev.code === 'Escape') {
-      ev.preventDefault();
-      ev.stopPropagation();
-      oncancellation();
-      nameEditing = false;
+      blurHandler(ev);
     }
   };
 </script>
@@ -67,16 +71,21 @@
   on:click={anchorHandler}
   on:keydown={fileKeyHandler}
   on:focus={() => {
-    self?.dispatchEvent(new CustomEvent(
-      'select-entry-changed',
-      { detail: { key: parentKey }, bubbles: true }
-    ));
+    self?.dispatchEvent(
+      new CustomEvent('select-entry-changed', { detail: { key: parentKey }, bubbles: true }),
+    );
   }}
   bind:this={self}
 >
   <a tabindex="-1" href="/">
     {#if nameEditing || entry === null}
-      <input type="text" bind:value={intermediateName} on:keydown={nameEditHandler} autofocus />
+      <input
+        type="text"
+        bind:value={intermediateName}
+        on:keydown={nameEditHandler}
+        on:blur={blurHandler}
+        autofocus
+      />
     {:else}
       {name}
     {/if}
