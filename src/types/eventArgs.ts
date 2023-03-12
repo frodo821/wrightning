@@ -56,6 +56,7 @@ export type OpenMessageBarDetail = {
 };
 
 type EventListener<T = never> = (ev: CustomEvent<T>) => void;
+type Only<T, U, V> = T extends U ? V : never;
 
 declare global {
   interface WindowEventMap {
@@ -72,19 +73,19 @@ declare global {
     'export-file-request': CustomEvent;
   }
 
-  namespace svelte.JSX {
-    interface HTMLProps<T extends 'svelte:window'> {
-      'onsave-as'?: EventListener<SaveAsEventDetail>;
-      'ondialog-open'?: EventListener<DialogOpenDetail>;
-      'onsnackbar-open'?: EventListener<OpenMessageBarDetail>;
-      'onopen-workspace'?: EventListener<OpenWorkspaceEventDetail>;
-      'onopen-file'?: EventListener<OpenFileEventDetail>;
-      'oncontent-changed'?: EventListener;
-      'onfile-metadata-changed'?: EventListener<{ id: string }>;
-      'oncreate-file'?: EventListener<{ path: string }>;
-      'onrequest-for-file-creation'?: EventListener<{ key: string }>;
-      'onworkspace-detail-edited'?: EventListener;
-      'onexport-file-request'?: EventListener;
+  namespace svelteHTML {
+    interface HTMLAttributes<T> {
+      'on:save-as'?: Only<T, Window, EventListener<SaveAsEventDetail>>;
+      'on:dialog-open'?: Only<T, Window, EventListener<DialogOpenDetail>>;
+      'on:snackbar-open'?: Only<T, Window, EventListener<OpenMessageBarDetail>>;
+      'on:open-workspace'?: Only<T, Window, EventListener<OpenWorkspaceEventDetail>>;
+      'on:open-file'?: Only<T, Window, EventListener<OpenFileEventDetail>>;
+      'on:content-changed'?: Only<T, Window, EventListener>;
+      'on:file-metadata-changed'?: Only<T, Window, EventListener<{ id: string }>>;
+      'on:create-file'?: Only<T, Window, EventListener<{ path: string }>>;
+      'on:request-for-file-creation'?: Only<T, Window, EventListener<{ key: string }>>;
+      'on:workspace-detail-edited'?: Only<T, Window, EventListener>;
+      'on:export-file-request'?: Only<T, Window, EventListener>;
     }
   }
 }
