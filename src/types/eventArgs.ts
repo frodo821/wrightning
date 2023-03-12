@@ -65,12 +65,12 @@ declare global {
     'snackbar-open': CustomEvent<OpenMessageBarDetail>;
     'open-workspace': CustomEvent<OpenWorkspaceEventDetail>;
     'open-file': CustomEvent<OpenFileEventDetail>;
-    'content-changed': CustomEvent;
+    'content-changed': CustomEvent<never>;
     'file-metadata-changed': CustomEvent<{ id: string }>;
     'create-file': CustomEvent<{ path: string }>;
     'request-for-file-creation': CustomEvent<{ key: string }>;
-    'workspace-detail-edited': CustomEvent;
-    'export-file-request': CustomEvent;
+    'workspace-detail-edited': CustomEvent<never>;
+    'export-file-request': CustomEvent<never>;
   }
 
   namespace svelteHTML {
